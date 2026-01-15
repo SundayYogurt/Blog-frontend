@@ -4,3 +4,24 @@
 [data-theme="blog_dark"] {
   color-scheme: dark;
 }
+
+/* ทำให้เฉพาะพื้นที่พิมพ์สูงขึ้น */
+.quill .ql-editor {
+  min-height: 280px;
+}
+
+/* กัน toolbar/คอนเทนต์ทะลุกรอบ */
+.quill .ql-container {
+  border: 0; /* เพราะเราครอบด้วย border แล้ว */
+}
+.quill .ql-toolbar {
+  border: 0;
+  border-bottom: 1px solid #e5e7eb; /* เส้นแบ่งสวยๆ */
+}
+
+.quill .ql-toolbar.ql-snow {
+  white-space: normal;
+}
+.quill .ql-formats {
+  margin-right: 8px;
+}
