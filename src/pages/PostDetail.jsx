@@ -87,10 +87,13 @@ console.log(post)
           </div>
           )}
         </div>
-        <div className="content text-grey-700">
-          {post.content}
+        <div 
+          className="content text-grey-700"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
+        <div className="flex justify-center w-full h-fit">
+        <img src={post.cover}></img>
         </div>
-        <img src={post.cover} className="flex justify-items-center mt-5 h-100 w-full"></img>
       </div>
     </div>
   );

@@ -57,9 +57,9 @@ const CreatePost = () => {
     try {
       const data = new FormData();
       data.append("title", title);
-      data.append("summary", summary);   // ✅ สะกดถูก
+      data.append("summary", summary);   
       data.append("content", content);
-      data.append("cover", cover);       // ✅ key ต้องชื่อ cover
+      data.append("cover", cover);       
 
       const response = await PostService.createPost(data);
 

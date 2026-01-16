@@ -27,7 +27,7 @@ const Home = () => {
   }, []);
   return (
     
-    <div className="space-y-4">
+    <div className="space-y-4 ">
       {posts.length > 0 &&
         posts.map((post, index) => (
           <Post key={index} index={index} {...post} />

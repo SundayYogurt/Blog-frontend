@@ -8,8 +8,8 @@ export const MainLayout = () => {
       <Navbar />
       <main className="grow container mx-auto px-4 py-8">
         <Outlet />
-        <Footer/>
       </main>
+      <Footer/>
     </div>
   );
 };
