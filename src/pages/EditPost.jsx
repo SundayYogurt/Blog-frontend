@@ -11,8 +11,10 @@ const EditPost = () => {
     title: "",
     summary: "",
     content: "",
-    cover: "", // ✅ URL
+    cover: "",
   });
+  const [coverFile, setCoverFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +32,7 @@ const EditPost = () => {
             content: p?.content ?? "",
             cover: p?.coverUrl ?? p?.cover ?? "",
           });
+          setPreviewUrl(p?.coverUrl ?? p?.cover ?? "");
         }
       } catch (error) {
         Swal.fire({
@@ -50,6 +53,14 @@ const EditPost = () => {
     setPost((prev) => ({ ...prev, [name]: value }));
   };
 
+  const onFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setCoverFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -65,8 +76,15 @@ const EditPost = () => {
     try {
       setIsSubmitting(true);
 
-      // ✅ ส่ง JSON ปกติ
-      const res = await PostService.updatePost(id, post);
+      const formData = new FormData();
+      formData.append("title", post.title);
+      formData.append("summary", post.summary);
+      formData.append("content", post.content);
+      if (coverFile) {
+        formData.append("cover", coverFile);
+      }
+
+      const res = await PostService.updatePost(id, formData);
 
       if (res.status === 200) {
         Swal.fire({
@@ -91,16 +109,6 @@ const EditPost = () => {
   };
 
   if (isLoading) return <div className="p-8 text-white">Loading...</div>;
-
-  const isValidUrl = (url) => {
-    try {
-      if (!url) return false;
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#911D1D] via-[#6B2AAE] to-[#1B1B3A]">
@@ -177,40 +185,38 @@ const EditPost = () => {
 
               {/* Right */}
               <div className="md:col-span-5 space-y-5">
-                {/* Cover URL */}
+                {/* Cover Image */}
                 <div className="rounded-2xl border border-gray-200 bg-white p-4">
                   <h3 className="text-sm font-semibold text-gray-800 mb-2">
-                    Cover Image URL
+                    Cover Image
                   </h3>
 
                   <input
-                    name="cover"
-                    value={post.cover}
-                    onChange={onChange}
-                    type="text"
-                    placeholder="https://.../image.jpg"
-                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+                    type="file"
+                    onChange={onFileChange}
+                    className="file-input file-input-bordered w-full"
                   />
 
                   <div className="mt-3 overflow-hidden rounded-xl border border-dashed border-gray-300 bg-gray-50">
-                    {isValidUrl(post.cover) ? (
+                    {previewUrl ? (
                       <img
-                        src={post.cover}
+                        src={previewUrl}
                         alt="cover preview"
                         className="h-[220px] w-full object-cover"
                         onError={(e) => {
                           e.currentTarget.style.display = "none";
+                          setPreviewUrl("");
                         }}
                       />
                     ) : (
                       <div className="flex h-[220px] items-center justify-center text-xs text-gray-500 px-4 text-center">
-                        ใส่ URL ที่ถูกต้องเพื่อแสดงตัวอย่างรูป
+                        Select a file to see a preview
                       </div>
                     )}
                   </div>
 
                   <p className="mt-2 text-xs text-gray-500">
-                    แนะนำ: ใช้ลิงก์ตรงของรูป (ลงท้าย .jpg/.png) จะขึ้น preview ง่ายสุด
+                    Upload a new cover image for your post.
                   </p>
                 </div>
 
@@ -244,7 +250,7 @@ const EditPost = () => {
                     <li>หัวข้อสื่อความหมายชัดเจน</li>
                     <li>Summary กระชับ อ่านแล้วอยากกด</li>
                     <li>เนื้อหาแบ่งย่อหน้า อ่านง่าย</li>
-                    <li>Cover URL เป็นลิงก์รูปจริง</li>
+                    <li>อัปโหลดรูป Cover ใหม่ (ถ้าต้องการ)</li>
                   </ul>
                 </div>
               </div>
